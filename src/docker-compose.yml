@@ -1,7 +1,7 @@
 services:
   mariadb:
     build: ./requirements/mariadb
-    container_name: mariadb
+    container_name: mariadb_inc
     env_file:
       - .env
     volumes:
@@ -10,15 +10,15 @@ services:
       - inception
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${SQL_USER}", "--password=${SQL_PASSWORD}"]
-      interval: 1m
-      timeout: 20s
-      retries: 4
-      start_period: 1m30s
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   wordpress:
     build: ./requirements/wordpress
-    container_name: wordpress
+    container_name: wordpress_inc
     env_file:
       - .env
     volumes:
@@ -32,7 +32,7 @@ services:
 
   nginx:
     build: ./requirements/nginx
-    container_name: nginx
+    container_name: nginx_inc
     ports:
       - "443:443"
     volumes:

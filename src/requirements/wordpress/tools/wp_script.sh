@@ -7,7 +7,7 @@ echo "=== Debut de l'initialisation de WordPress ==="
 
 cd /var/www/wordpress
 
-if [ ! -f /var/www/wordpress/wp-config.php ]; then    
+# if [ ! -f /var/www/wordpress/wp-config.php ]; then    
     wp config create \
         --dbname="${SQL_DATABASE}" \
         --dbuser="${SQL_USER}" \
@@ -33,9 +33,9 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
         --user_pass="${WP_USER2_PASSWORD}" \
         --role=editor \
         --allow-root
-else
-    echo "WordPress est deja configure"
-fi
+# else
+#     echo "WordPress est deja configure"
+# fi
 
 chown -R www-data:www-data /var/www/wordpress
 chmod -R 755 /var/www/wordpress

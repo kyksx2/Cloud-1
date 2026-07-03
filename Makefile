@@ -1,4 +1,4 @@
-NAME: cloud-1
+NAME= cloud-1
 
 all: up
 

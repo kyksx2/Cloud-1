@@ -16,15 +16,17 @@
     - name: installer docker et docker-compose
       ansible.builtin.apt:
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module
-        name: docker
-        update_cache: yes
+        name: docker.io
         state: present
+        update_cache: yes
+      when: ansible_host != 'localhost'
 
     - name: installer make
       ansible.builtin.apt:
         name: make
         update_cache: yes
         state: present
+      when: ansible_host != 'localhost'
 
     - name: creer le volume wordpress
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/file_module.html#ansible-collections-ansible-builtin-file-module
@@ -44,15 +46,21 @@
         src: ./src/
         dest: /var/www/cloud-1/
         owner: root
-        groupe: root
+        group: root
         mode: '0755'
         
+    - name: verifier si Nginx tourne deja
+# # https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_info_module.html#ansible-collections-community-docker-docker-container-info-module
+      community.docker.docker_container_info:
+        name: nginx_inc
+      register: nginx_status
 
     - name: lancer le make
       ansible.builtin.shell:
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html#ansible-collections-ansible-builtin-shell-module
         chdir:  /var/www/cloud-1
         cmd:  make
+      when: not nginx_status.exists or nginx_status.container.State.Status != 'running'
 
 
 # collection == "ansible.builtin.apt"
