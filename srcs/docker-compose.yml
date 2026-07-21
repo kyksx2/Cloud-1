@@ -1,0 +1,79 @@
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    env_file:
+      - .env
+    volumes:
+      - db-volume:/var/lib/mysql
+    networks:
+      - inception
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${SQL_USER}", "--password=${SQL_PASSWORD}"]
+      interval: 15s #1m
+      timeout: 20s
+      retries: 4
+      start_period: 1m30s
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.3-apache
+    container_name: phpmyadmin_inc
+    networks:
+      - inception
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_ABSOLUTE_URI: https://kjolly.42.fr/phpmyadmin/
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    env_file:
+      - .env
+    volumes:
+      - wp-volume:/var/www/wordpress
+    networks:
+      - inception
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    restart: always
+
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - wp-volume:/var/www/wordpress
+    networks:
+      - inception
+    depends_on: 
+      - wordpress
+    restart: always
+
+networks:
+  inception:
+    driver: bridge
+
+volumes:
+  db-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/kjolly/data/mariadb
+
+  wp-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/kjolly/data/wordpress

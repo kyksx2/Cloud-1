@@ -43,7 +43,7 @@
     - name: copier le projet
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/copy_module.html#ansible-collections-ansible-builtin-copy-module
       ansible.builtin.copy:
-        src: ./src/
+        src: srcs/
         dest: /var/www/cloud-1/
         owner: root
         group: root
@@ -52,7 +52,7 @@
     - name: verifier si Nginx tourne deja
 # # https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_info_module.html#ansible-collections-community-docker-docker-container-info-module
       community.docker.docker_container_info:
-        name: nginx_inc
+        name: nginx
       register: nginx_status
 
     - name: lancer le make
