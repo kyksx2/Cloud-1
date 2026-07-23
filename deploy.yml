@@ -7,7 +7,7 @@
 # https://docs.ansible.com/projects/ansible/latest/collections/index_module.html#ansible-builtin
 ---
 
-- name: deployer cloud-1 en local
+- name: deployer cloud-1
   hosts:  webservers # groupe present dans inventory.ini
   become: true # elevation sudo
   gather_facts: true # par default true, scanne la machine et creer les var contenant les infos du systeme
@@ -16,9 +16,19 @@
     - name: installer docker et docker-compose
       ansible.builtin.apt:
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module
-        name: docker.io
+        name:
+          - docker.io
+          - docker-compose-v2
         state: present
         update_cache: yes
+      when: ansible_host != 'localhost'
+
+    - name: demarrer docker
+      ansible.builtin.systemd_service:
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/systemd_service_module.html#ansible-collections-ansible-builtin-systemd-service-module
+        name: docker
+        state: started
+        enabled: true
       when: ansible_host != 'localhost'
 
     - name: installer make
@@ -48,7 +58,7 @@
         owner: root
         group: root
         mode: '0755'
-        
+
     - name: verifier si Nginx tourne deja
 # # https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_info_module.html#ansible-collections-community-docker-docker-container-info-module
       community.docker.docker_container_info:

@@ -24,10 +24,8 @@ services:
     environment:
       PMA_HOST: mariadb
       PMA_PORT: 3306
-      PMA_ABSOLUTE_URI: https://kjolly.42.fr/phpmyadmin/
+      PMA_ABSOLUTE_URI: https://portedesaintcloud.duckdns.org/phpmyadmin/
     restart: always
-    ports:
-      - "8080:80"
     depends_on:
       mariadb:
         condition: service_healthy

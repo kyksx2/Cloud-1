@@ -1,11 +1,11 @@
 NAME = Inception
-COMPOSE = docker compose -f ./docker-compose.yml
+COMPOSE = docker compose -f docker-compose.yml
 VOLUME = /home/kjolly/data/wordpress /home/kjolly/data/mariadb
 
 all: up
 
 up:
-	mkdir -p $(VOLUME)
+# 	mkdir -p $(VOLUME)
 	@$(COMPOSE) up -d --build
 
 down:

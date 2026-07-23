@@ -3,4 +3,5 @@ NAME= cloud-1
 all: up
 
 up:
-	ansible-playbook -i inventory.ini deploy.yml --ask-become-pass
+		ansible-galaxy install -r requirements.yml
+		ansible-playbook -i inventory.ini deploy.yml --ask-become-pass
