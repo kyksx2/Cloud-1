@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+chown -R mysql:mysql /var/lib/mysql
+
 echo "=== Debut de l'initialisation de MariaDB ==="
 
 ROOT_MYSQL_ARGS="-uroot"

@@ -46,7 +46,7 @@ services:
 
   nginx:
     build: ./requirements/nginx
-    container_name: nginx
+    container_name: nginx_inception
     ports:
       - "443:443"
     volumes:

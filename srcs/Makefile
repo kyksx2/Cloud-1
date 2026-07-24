@@ -5,7 +5,6 @@ VOLUME = /home/kjolly/data/wordpress /home/kjolly/data/mariadb
 all: up
 
 up:
-# 	mkdir -p $(VOLUME)
 	@$(COMPOSE) up -d --build
 
 down:

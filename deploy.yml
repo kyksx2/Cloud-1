@@ -21,7 +21,6 @@
           - docker-compose-v2
         state: present
         update_cache: yes
-      when: ansible_host != 'localhost'
 
     - name: demarrer docker
       ansible.builtin.systemd_service:
@@ -29,23 +28,21 @@
         name: docker
         state: started
         enabled: true
-      when: ansible_host != 'localhost'
 
     - name: installer make
       ansible.builtin.apt:
         name: make
         update_cache: yes
         state: present
-      when: ansible_host != 'localhost'
 
     - name: creer le volume wordpress
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/file_module.html#ansible-collections-ansible-builtin-file-module
       ansible.builtin.file:
         path: /home/kjolly/data/{{ item }}
         state:  directory
-        owner:  root
-        group:  root
-        mode: '0755'
+        # owner:  root
+        # group:  root
+        # mode: '0755'
       loop:
         - wordpress
         - mariadb
@@ -62,7 +59,7 @@
     - name: verifier si Nginx tourne deja
 # # https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_info_module.html#ansible-collections-community-docker-docker-container-info-module
       community.docker.docker_container_info:
-        name: nginx
+        name: nginx_inception
       register: nginx_status
 
     - name: lancer le make
