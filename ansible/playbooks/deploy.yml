@@ -1,0 +1,81 @@
+# playbook -> fichier d'automatisation
+        #  -> suite logique d'etapes ordonnees
+
+# playbook keywords:
+# https://docs.ansible.com/projects/ansible/latest/reference_appendices/playbooks_keywords.html
+# index of all modules:
+# https://docs.ansible.com/projects/ansible/latest/collections/index_module.html#ansible-builtin
+---
+
+- name: deployer cloud-1
+  hosts:  webservers # groupe present dans inventory.ini
+  become: true # elevation sudo
+  gather_facts: true # par default true, scanne la machine et creer les var contenant les infos du systeme
+
+  tasks:
+    - name: installer docker et docker-compose
+      ansible.builtin.apt:
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module
+        name:
+          - docker.io
+          - docker-compose-v2
+        state: present
+        update_cache: yes
+
+    - name: demarrer docker
+      ansible.builtin.systemd_service:
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/systemd_service_module.html#ansible-collections-ansible-builtin-systemd-service-module
+        name: docker
+        state: started
+        enabled: true
+
+    - name: installer make
+      ansible.builtin.apt:
+        name: make
+        update_cache: yes
+        state: present
+
+    - name: creer le volume wordpress
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/file_module.html#ansible-collections-ansible-builtin-file-module
+      ansible.builtin.file:
+        path: /home/kjolly/data/{{ item }}
+        state:  directory
+        # owner:  root
+        # group:  root
+        # mode: '0755'
+      loop:
+        - wordpress
+        - mariadb
+
+    - name: copier le projet
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/copy_module.html#ansible-collections-ansible-builtin-copy-module
+      ansible.builtin.copy:
+        src: srcs/
+        dest: /var/www/cloud-1/
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: verifier si Nginx tourne deja
+# # https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_info_module.html#ansible-collections-community-docker-docker-container-info-module
+      community.docker.docker_container_info:
+        name: nginx_inception
+      register: nginx_status
+
+    - name: lancer le make
+      ansible.builtin.shell:
+# https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html#ansible-collections-ansible-builtin-shell-module
+        chdir:  /var/www/cloud-1
+        cmd:  make
+      when: not nginx_status.exists or nginx_status.container.State.Status != 'running'
+
+
+# collection == "ansible.builtin.apt"
+# 3 collections -> 90% des utilisations
+# 1- "ansible.builtin", 2- "ansible.posix", 3- "community.general"
+# https://blog.stephane-robert.info/docs/infra-as-code/gestion-de-configuration/ansible/modules/trouver-le-bon-module/
+
+# documentation modules FQCN
+# https://blog.stephane-robert.info/docs/infra-as-code/gestion-de-configuration/ansible/modules/
+# https://docs.ansible.com/projects/lint/rules/fqcn/#canonical-module-names
+
