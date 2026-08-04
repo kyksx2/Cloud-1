@@ -1,5 +1,6 @@
-# playbook -> fichier d'automatisation
-        #  -> suite logique d'etapes ordonnees
+# deux ecoles: playbooks a la racine ou dans un dossier 'playbooks' si + de 5 files
+#? playbook -> fichier d'automatisation
+#?          -> suite logique d'etapes ordonnees
 
 # playbook keywords:
 # https://docs.ansible.com/projects/ansible/latest/reference_appendices/playbooks_keywords.html

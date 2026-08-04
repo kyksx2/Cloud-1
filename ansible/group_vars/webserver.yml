@@ -1,0 +1,3 @@
+# variables partager par le groupe 'webservers'
+#! j'aurais pus nomer 'all.yml' car je n'ai qu'une ip mais dans le cas ou il y
+#! aurait plusieurs ip et groupes je prend la maniere propre
