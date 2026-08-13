@@ -1,6 +1,7 @@
 services:
   mariadb:
     build: ./requirements/mariadb
+    image: srcs-mariadb
     container_name: mariadb
     env_file:
       - .env
@@ -53,7 +54,7 @@ services:
       - wp-volume:/var/www/wordpress
     networks:
       - inception
-    depends_on: 
+    depends_on:
       - wordpress
     restart: always
 
@@ -67,11 +68,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/kjolly/data/mariadb
+      device: /Users/mario/data/mariadb
 
   wp-volume:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/kjolly/data/wordpress
+      device: /Users/mario/data/wordpress
