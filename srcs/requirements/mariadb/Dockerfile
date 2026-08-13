@@ -1,6 +1,6 @@
-FROM debian:bookworm
+FROM alpine:3.23
 
-RUN apt update -y && apt-get install mariadb-server -y
+RUN apk update && apk add --no-cache mariadb mariadb-client bash
 
 RUN mkdir -p /run/mysqld && \
     chown mysql:mysql /run/mysqld && \
