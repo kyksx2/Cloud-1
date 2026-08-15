@@ -1,3 +1,8 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for install_docker
+- name: Install docker
+
+- name: Install docker-compose
+
+- name: start docker
