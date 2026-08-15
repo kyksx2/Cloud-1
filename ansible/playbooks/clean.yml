@@ -1,1 +1,27 @@
-# faire le make fclean qui arrete tout et supprimr le dossier cloud-1
+#? faire le make clean qui arrete tout et supprimer le dossier cloud-1
+---
+
+- name: clean all cloud-1
+  hosts: webservers
+  become: true
+
+  tasks:
+  - name: make clean for inception
+    ansible.builtin.command:
+      chdir: /var/www/cloud-1
+      args:
+        cmd: make clean
+        remove: /var/www/cloud-1/Makefile
+
+  - name: rm volumes
+    ansible.builtin.file:
+      path: /home/kjolly/data/{{ item }}
+      state: absent
+    loop:
+      - wordpress
+      - mariadb
+
+  - name: rm cloud-1 folder
+    ansible.builtin.file:
+      path: /var/www/cloud-1
+      state: absent
