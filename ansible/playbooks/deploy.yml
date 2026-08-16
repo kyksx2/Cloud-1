@@ -1,11 +1,17 @@
 # installer les logiciels, creer les dossiers et lancer le make
 ---
-
-- name: deploy cloud-1
+- name: creation User
   hosts: webservers
   become: true
   roles:
-  - update_packages
-  - install_docker
+  - base
+
+
+- name: deploy cloud-1
+  hosts: webservers
+  remote_user: jarvis
+  roles:
   - setup_inception
+  - install_docker
   - run_services
+  #! penser a mettre 'become true' pour les actions qui meritent 'sudo'
