@@ -12,8 +12,6 @@
 - name: creation User
   hosts: webservers # groupe present dans inventory.ini
   become: true # elevation sudo
-  vars:
-    deploy_user: jarvis
   roles:
   - base
 
