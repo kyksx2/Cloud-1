@@ -11,7 +11,7 @@
 
 - name: add ssh_key for connect
   ansible.posix.authorized_key:
-    name: "{{ deploy_user }}"
+    user: "{{ deploy_user }}"
     key: "{{ lookup('file', '~/.ssh/id_ed25519.pub')}}"
     #? permet de se connecter a ce user via mon terminal pour le script ansible
 

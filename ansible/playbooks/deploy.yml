@@ -11,9 +11,10 @@
 # ============================
 - name: creation User
   hosts: webservers # groupe present dans inventory.ini
+  # remote_user: root
   become: true # elevation sudo
   roles:
-  - base
+  - ../roles/base
 
 # ===============================
 # PLAY 2 : PROJET DEPLOYEMENT
@@ -22,7 +23,7 @@
   hosts: webservers
   remote_user: "{{ deploy_user }}"
   roles:
-  - setup_inception
-  - install_docker
-  - run_services
+  - ../roles/install_docker
+  - ../roles/setup_inception
+  - ../roles/run_services
   #! penser a mettre 'become true' pour les actions qui meritent 'sudo'
