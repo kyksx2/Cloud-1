@@ -1,11 +1,44 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for setup_inception
+- name: updated packets
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+
 - name: install make
+  ansible.builtin.apt:
+    name: make
+    state: latest
+  become: true
 
 - name: create volumes
-
-- name: create folder for inception
+  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/file_module.html#ansible-collections-ansible-builtin-file-module
+  ansible.builtin.file:
+    path: /home/{{ deploy_user }}/data/{{ item }}
+    state: directory
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0755'
+  loop:
+    - wordpress_inc
+    - mariadb_inc
 
 - name: copy inception
+  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/copy_module.html#ansible-collections-ansible-builtin-copy-module
+  ansible.builtin.copy:
+    src: ../../../../srcs/
+    dest: /var/www/cloud-1/
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0755'
+  become: true
 
+- name: copy .env chiffre
+  ansible.builtin.copy:
+    src: ../files/.env
+    dest: /var/www/cloud-1/.env
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0600'
+  become: true

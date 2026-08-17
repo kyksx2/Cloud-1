@@ -1,15 +1,28 @@
 # installer les logiciels, creer les dossiers et lancer le make
+# deux ecoles: playbooks a la racine ou dans un dossier 'playbooks' si + de 5 files
+#? playbook -> fichier d'automatisation avec suite logique d'etapes ordonnees
+# playbook keywords:
+# https://docs.ansible.com/projects/ansible/latest/reference_appendices/playbooks_keywords.html
+# index of all modules:
+# https://docs.ansible.com/projects/ansible/latest/collections/index_module.html#ansible-builtin
 ---
+# ============================
+#  PLAY 1 : USER CREATION
+# ============================
 - name: creation User
-  hosts: webservers
-  become: true
+  hosts: webservers # groupe present dans inventory.ini
+  become: true # elevation sudo
+  vars:
+    deploy_user: jarvis
   roles:
   - base
 
-
+# ===============================
+# PLAY 2 : PROJET DEPLOYEMENT
+# ===============================
 - name: deploy cloud-1
   hosts: webservers
-  remote_user: jarvis
+  remote_user: "{{ deploy_user }}"
   roles:
   - setup_inception
   - install_docker

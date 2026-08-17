@@ -1,8 +1,18 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for install_docker
-- name: Install docker
-
-- name: Install docker-compose
+- name: Install docker et docker compose
+  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-compose-v2
+    state: latest
+  become: true
 
 - name: start docker
+  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/systemd_service_module.html#ansible-collections-ansible-builtin-systemd-service-module
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+  become: true

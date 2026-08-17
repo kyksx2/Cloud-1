@@ -1,6 +1,8 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for run_services
-- name: check containers runs
-
 - name: start all containers
+  ansible.builtin.command:
+    chdir: /var/www/cloud-1
+    cmd: make
+  become: true

@@ -4,20 +4,21 @@
 # User creation, switch to jarvis instead of root
 - name: User creation
   ansible.builtin.user:
-    name: {{ deploy_user }}
+    name: "{{ deploy_user }}"
     groups: sudo
     append: true
+    #? utilisateur sans mot de passe avec une cle ssh : 'Passwordless login'
 
 - name: add ssh_key for connect
   ansible.posix.authorized_key:
-  name: {{ deploy_user }}
-  key: "{{ lookup('file', '~/.ssh/id_ed25519.pub')}}"
-  #? permet de se connecter a ce user via mon terminal pour le script ansible
+    name: "{{ deploy_user }}"
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub')}}"
+    #? permet de se connecter a ce user via mon terminal pour le script ansible
 
 - name: Sudo without ask password
   ansible.builtin.copy:
-  content: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL"
-  dest: /etc/sudoers.d/{{ deploy_user }}
-  owner: root
-  group: root
-  mode: 0440
+    content: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL"
+    dest: /etc/sudoers.d/{{ deploy_user }}
+    owner: root
+    group: root
+    mode: 0440
