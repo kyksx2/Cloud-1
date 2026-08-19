@@ -33,6 +33,14 @@
 - name: add official docker depot with deb828
  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/deb822_repository_module.html
   ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: https://download.docker.com/linux/{{ ansible_distribution | lower }}
+    suites: "{{ ansible_distribution_release }}"
+    components: stable
+    architectures: amd64
+    signed_by: /etc/apt/keyrings/docker.asc
+  become: true
 
 # - name: Ajouter le dépôt officiel Docker aux sources Linux
 #   ansible.builtin.apt_repository:
