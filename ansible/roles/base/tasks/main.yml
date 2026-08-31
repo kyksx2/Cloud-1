@@ -8,12 +8,14 @@
     groups: sudo
     append: true
     #? utilisateur sans mot de passe avec une cle ssh : 'Passwordless login'
+  become: true
 
 - name: add ssh_key for connect
   ansible.posix.authorized_key:
     user: "{{ deploy_user }}"
     key: "{{ lookup('file', '~/.ssh/id_ed25519.pub')}}"
     #? permet de se connecter a ce user via mon terminal pour le script ansible
+  become: true
 
 - name: Sudo without ask password
   ansible.builtin.copy:
@@ -22,3 +24,4 @@
     owner: root
     group: root
     mode: 0440
+  become: true
