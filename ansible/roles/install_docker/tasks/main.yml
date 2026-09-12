@@ -15,7 +15,7 @@
       - ca-certificates
       - gnupg
     state: latest
-    update_cache: true
+    # update_cache: true
   become: true
 
 - name: create folder for security key
@@ -61,7 +61,7 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: latest
-    update_cache: true
+    # update_cache: true
   become: true
 
 - name: start docker

@@ -1,8 +1,14 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for run_services
-- name: start all containers
-  ansible.builtin.command:
-    chdir: /var/www/cloud-1
-    cmd: make
-  become: true
+# - name: start all containers
+#   ansible.builtin.command:
+#     chdir: /home/{{ deploy_user }}/var/www/cloud-1/
+#     cmd: make
+#   become: true
+
+- name: Ensure Docker Compose services are running
+  community.docker.docker_compose_v2:
+    project_src: /home/{{ deploy_user }}/var/www/cloud-1/
+    state: present
+    build: policy

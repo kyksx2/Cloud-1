@@ -8,14 +8,14 @@
   tasks:
   - name: make clean for inception
     ansible.builtin.command:
-      chdir: /var/www/cloud-1
+      chdir: /home/{{deploy_user}}//var/www/cloud-1
       args:
         cmd: make clean
         remove: /var/www/cloud-1/Makefile
 
   - name: rm volumes
     ansible.builtin.file:
-      path: /home/kjolly/data/{{ item }}
+      path: /home/{{deploy_user}}/data/{{ item }}
       state: absent
     loop:
       - wordpress
@@ -23,5 +23,8 @@
 
   - name: rm cloud-1 folder
     ansible.builtin.file:
-      path: /var/www/cloud-1
+      path: /home/{{deploy_user}}/var/www/cloud-1
       state: absent
+
+#! think to erase deploy_user
+#! supp make for idempotence

@@ -17,6 +17,13 @@
     #? permet de se connecter a ce user via mon terminal pour le script ansible
   become: true
 
+- name: User creation
+  ansible.builtin.user:
+    name: "{{ deploy_user }}"
+    groups: sudo,docker
+    append: true
+  become: true
+
 - name: Sudo without ask password
   ansible.builtin.copy:
     content: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL"

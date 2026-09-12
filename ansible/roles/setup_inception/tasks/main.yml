@@ -16,23 +16,38 @@
     group: "{{ deploy_user }}"
     mode: '0755'
   loop:
-    - wordpress_inc
-    - mariadb_inc
+    - wordpress
+    - mariadb
 
-- name: copy inception
-  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/copy_module.html#ansible-collections-ansible-builtin-copy-module
+- name: Copy requirements folder
   ansible.builtin.copy:
-    src: ../../../../srcs/
-    dest: /var/www/cloud-1/
+    src: ../../../../srcs/requirements/
+    dest: /home/{{ deploy_user }}/var/www/cloud-1/requirements/
     owner: "{{ deploy_user }}"
     group: "{{ deploy_user }}"
     mode: '0755'
   become: true
 
+# - name: Copy Makefile
+#   ansible.builtin.copy:
+#     src: ../../../../srcs/Makefile
+#     dest: /home/{{ deploy_user }}/var/www/cloud-1/Makefile
+#     owner: "{{ deploy_user }}"
+#     group: "{{ deploy_user }}"
+#     mode: '0755'
+
+- name: Render Docker Compose configuration
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /home/{{ deploy_user }}/var/www/cloud-1/docker-compose.yml
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0644'
+
 - name: copy .env chiffre
   ansible.builtin.copy:
     src: ../files/.env
-    dest: /var/www/cloud-1/.env
+    dest: /home/{{ deploy_user }}/var/www/cloud-1/.env
     owner: "{{ deploy_user }}"
     group: "{{ deploy_user }}"
     mode: '0600'

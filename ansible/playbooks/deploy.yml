@@ -11,7 +11,7 @@
 # ============================
 - name: creation User
   hosts: webservers # groupe present dans inventory.ini
-  # remote_user: root
+  remote_user: root
   become: true # elevation sudo
   roles:
   - ../roles/base
