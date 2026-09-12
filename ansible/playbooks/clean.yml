@@ -1,17 +1,20 @@
 #? faire le make clean qui arrete tout et supprimer le dossier cloud-1
 ---
 
-- name: clean all cloud-1
+- name: creation User
   hosts: webservers
+  remote_user: root
   become: true
 
   tasks:
-  - name: make clean for inception
-    ansible.builtin.command:
-      chdir: /home/{{deploy_user}}//var/www/cloud-1
-      args:
-        cmd: make clean
-        remove: /var/www/cloud-1/Makefile
+  - name: down the docker compose
+    community.docker.docker_compose_v2:
+      state: absent
+
+# https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_compose_v2_module.html
+  - name: erase stoped containeurs
+
+  - name: remove volumes
 
   - name: rm volumes
     ansible.builtin.file:
