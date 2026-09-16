@@ -1,22 +1,22 @@
-#? faire le make clean qui arrete tout et supprimer le dossier cloud-1
+#? faire un clean qui arrete tout et supprimer le dossier cloud-1
 ---
 
-- name: creation User
+- name: clean user_deploy space
   hosts: webservers
   remote_user: root
   become: true
 
   tasks:
-  - name: down the docker compose
+# ! a voir apres test mais peut etre faut il verifier que le user et cloud-1 existe avant de faire tout ca
+  - name: down the docker compose and clear
     community.docker.docker_compose_v2:
-      state: absent
-
 # https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_compose_v2_module.html
-  - name: erase stoped containeurs
+      project_src: /home/{{ deploy_user }}/var/www/cloud-1
+      state: absent
+      remove_images: all
+      remove_volumes: true
 
-  - name: remove volumes
-
-  - name: rm volumes
+  - name: remove volumes folders
     ansible.builtin.file:
       path: /home/{{deploy_user}}/data/{{ item }}
       state: absent
@@ -24,10 +24,13 @@
       - wordpress
       - mariadb
 
-  - name: rm cloud-1 folder
+  - name: remove cloud-1 folder
     ansible.builtin.file:
       path: /home/{{deploy_user}}/var/www/cloud-1
       state: absent
 
-#! think to erase deploy_user
-#! supp make for idempotence
+  - name: remove user_deploy account
+    ansible.builtin.user:
+      name: "{{ deploy_user }}"
+      state: absent
+      remove: true
