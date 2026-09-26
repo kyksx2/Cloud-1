@@ -1,6 +1,5 @@
 NAME = Inception
 COMPOSE = docker compose -f docker-compose.yml
-VOLUME = /home/kjolly/data/wordpress /home/kjolly/data/mariadb
 
 all: up
 
@@ -19,7 +18,6 @@ logs:
 
 clean:
 	@$(COMPOSE) down -v --rmi all
-	@sudo rm -rf $(VOLUME)
 
 re: clean all
 

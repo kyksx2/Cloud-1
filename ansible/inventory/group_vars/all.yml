@@ -1,0 +1,3 @@
+# variables partager par le groupe 'webservers'
+---
+deploy_user: jarvis
