@@ -7,7 +7,15 @@ RUN apk add --no-cache \
     php85 \
     php85-fpm \
     php85-mysqli \
-    php85-pdo_mysql
+    php85-pdo_mysql \
+    php85-phar \
+    php85-mbstring \
+    php85-ctype \
+    php85-iconv \
+    bash
+
+# wp-cli utilise '#!/usr/bin/env php' -> on cree le lien 'php' vers php85
+RUN [ -e /usr/bin/php ] || ln -s /usr/bin/php85 /usr/bin/php
 
 RUN adduser -u 82 -D -S -G www-data www-data
 

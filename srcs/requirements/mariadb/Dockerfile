@@ -6,7 +6,9 @@ RUN mkdir -p /run/mysqld && \
     chown mysql:mysql /run/mysqld && \
     chmod 777 /run/mysqld
 
-COPY conf/conf_maria.d /etc/mysql/mariadb.conf.d/99-custom.cnf
+# alpine lit /etc/my.cnf.d/*.cnf (pas /etc/mysql/... = debian). On remplace mariadb-server.cnf
+# qui contient 'skip-networking' (sinon wordpress ne peut pas se connecter en TCP)
+COPY conf/conf_maria.d /etc/my.cnf.d/mariadb-server.cnf
 
 COPY tools/mdb_script.sh /usr/local/bin/mdb_script.sh
 

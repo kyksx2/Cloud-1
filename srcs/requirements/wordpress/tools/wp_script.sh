@@ -7,7 +7,8 @@ echo "=== Debut de l'initialisation de WordPress ==="
 
 cd /var/www/wordpress
 
-if [ ! -f /var/www/wordpress/wp-config.php ]; then    
+# chaque etape est verifiee separement -> un 1er demarrage rate ne bloque pas les suivants
+if [ ! -f /var/www/wordpress/wp-config.php ]; then
     wp config create \
         --dbname="${SQL_DATABASE}" \
         --dbuser="${SQL_USER}" \
@@ -15,7 +16,9 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
         --dbhost="mariadb" \
         --skip-check \
         --allow-root
-    
+fi
+
+if ! wp core is-installed --allow-root 2>/dev/null; then
     wp core install \
         --url="https://${DOMAIN_NAME}" \
         --title="${WP_TITLE}" \
@@ -24,17 +27,19 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
         --admin_email="${WP_ADMIN_EMAIL}" \
         --skip-email \
         --allow-root
-    
-    echo "Configuration de WordPress terminee !"
 
+    echo "Configuration de WordPress terminee !"
+else
+    echo "WordPress est deja configure"
+fi
+
+if ! wp user get "${WP_USER2_LOGIN}" --field=ID --allow-root >/dev/null 2>&1; then
     wp user create \
         "${WP_USER2_LOGIN}" \
         "${WP_USER2_EMAIL}" \
         --user_pass="${WP_USER2_PASSWORD}" \
         --role=editor \
         --allow-root
-else
-    echo "WordPress est deja configure"
 fi
 
 chown -R www-data:www-data /var/www/wordpress
@@ -42,4 +47,5 @@ chmod -R 755 /var/www/wordpress
 chmod -R 775 /var/www/wordpress/wp-content
 
 echo "Demarrage de PHP-FPM..."
-exec php-fpm8.2 -F --fpm-config /etc/php/8.2/fpm/php-fpm.conf
+# alpine + php85 -> binaire 'php-fpm85' (php-fpm8.2 = debian)
+exec php-fpm85 -F
