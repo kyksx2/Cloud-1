@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # sleep 10
@@ -6,6 +6,11 @@ set -e
 echo "=== Debut de l'initialisation de WordPress ==="
 
 cd /var/www/wordpress
+
+until mariadb -h mariadb -u"${SQL_USER}" -p"${SQL_PASSWORD}" -e "SELECT 1" "${SQL_DATABASE}" >/dev/null 2>&1; do
+    echo "En attente de MariaDB..."
+    sleep 2
+done
 
 # chaque etape est verifiee separement -> un 1er demarrage rate ne bloque pas les suivants
 if [ ! -f /var/www/wordpress/wp-config.php ]; then
@@ -27,6 +32,7 @@ if ! wp core is-installed --allow-root 2>/dev/null; then
         --admin_email="${WP_ADMIN_EMAIL}" \
         --skip-email \
         --allow-root
+
 
     echo "Configuration de WordPress terminee !"
 else

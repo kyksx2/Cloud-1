@@ -2,27 +2,31 @@
 ---
 # tasks file for base
 # User creation, switch to jarvis instead of root
-- name: User creation
+
+- name: Ensure required groups exist
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - sudo
+    - docker
+  become: true
+
+- name: User creation and group assignment
   ansible.builtin.user:
     name: "{{ deploy_user }}"
-    groups: sudo
+    groups:
+      - sudo
+      - docker
     append: true
-    #? utilisateur sans mot de passe avec une cle ssh : 'Passwordless login'
   become: true
 
 - name: add ssh_key for connect
   ansible.posix.authorized_key:
     user: "{{ deploy_user }}"
     key: "{{ lookup('file', '~/.ssh/id_ed25519.pub')}}"
-    #? permet de se connecter a ce user via mon terminal pour le script ansible
   become: true
-
-- name: User creation
-  ansible.builtin.user:
-    name: "{{ deploy_user }}"
-    groups: sudo,docker
-    append: true
-  become: true
+#? permet de se connecter a ce user via mon terminal pour le script ansible
 
 - name: Sudo without ask password
   ansible.builtin.copy:

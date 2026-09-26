@@ -4,7 +4,7 @@ all: up
 
 up:
 	ansible-galaxy install -r ./ansible/requirements.yml
-	ansible-playbook ./ansible/playbooks/deploy.yml --ask-vault-pass
+	ansible-playbook -i ./ansible/inventory/inventory.ini ./ansible/playbooks/deploy.yml --ask-vault-pass
 
 clean:
 	ansible-playbook ./ansible/playbooks/clean.yml

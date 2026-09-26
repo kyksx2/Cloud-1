@@ -11,10 +11,10 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${SQL_USER}", "--password=${SQL_PASSWORD}"]
-      interval: 15s #1m
-      timeout: 20s
-      retries: 4
-      start_period: 1m30s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   phpmyadmin:
     image: phpmyadmin:5.2.3-apache
@@ -55,6 +55,7 @@ services:
       - inception
     depends_on:
       - wordpress
+      - phpmyadmin
     restart: always
 
 networks:
@@ -63,15 +64,4 @@ networks:
 
 volumes:
   db-volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/{{ deploy_user }}/data/mariadb
-
   wp-volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/{{ deploy_user }}/data/wordpress

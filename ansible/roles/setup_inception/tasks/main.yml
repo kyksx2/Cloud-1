@@ -7,18 +7,6 @@
     state: latest
   become: true
 
-- name: create volumes
-  # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/file_module.html#ansible-collections-ansible-builtin-file-module
-  ansible.builtin.file:
-    path: /home/{{ deploy_user }}/data/{{ item }}
-    state: directory
-    owner: "{{ deploy_user }}"
-    group: "{{ deploy_user }}"
-    mode: '0755'
-  loop:
-    - wordpress
-    - mariadb
-
 - name: Copy requirements folder
   ansible.builtin.copy:
     src: ../../../../srcs/requirements/
@@ -27,14 +15,6 @@
     group: "{{ deploy_user }}"
     mode: '0755'
   become: true
-
-# - name: Copy Makefile
-#   ansible.builtin.copy:
-#     src: ../../../../srcs/Makefile
-#     dest: /home/{{ deploy_user }}/var/www/cloud-1/Makefile
-#     owner: "{{ deploy_user }}"
-#     group: "{{ deploy_user }}"
-#     mode: '0755'
 
 - name: Render Docker Compose configuration
   ansible.builtin.template:

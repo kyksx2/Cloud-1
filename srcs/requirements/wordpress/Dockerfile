@@ -12,35 +12,30 @@ RUN apk add --no-cache \
     php85-mbstring \
     php85-ctype \
     php85-iconv \
+    php85-openssl \
+    php85-session \
     bash
 
-# wp-cli utilise '#!/usr/bin/env php' -> on cree le lien 'php' vers php85
 RUN [ -e /usr/bin/php ] || ln -s /usr/bin/php85 /usr/bin/php
 
-RUN adduser -u 82 -D -S -G www-data www-data
+RUN getent group www-data || addgroup -g 82 -S www-data && \
+    id -u www-data &>/dev/null || adduser -u 82 -D -S -G www-data www-data
 
-RUN mkdir -p /var/log/php-fpm && \
-    chown -R www-data:www-data /var/log/php-fpm
-
-RUN wget https://fr.wordpress.org/wordpress-6.8.2-fr_FR.tar.gz -P /var/www && \
-    cd /var/www && \
-    tar -xzf wordpress-6.8.2-fr_FR.tar.gz && \
-    rm wordpress-6.8.2-fr_FR.tar.gz
+RUN mkdir -p /var/log/php-fpm /run/php /var/www && \
+    chown -R www-data:www-data /var/log/php-fpm /run/php
 
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -O /usr/local/bin/wp && \
     chmod +x /usr/local/bin/wp
 
-COPY conf/www.conf /etc/php85/php-fpm.d/www.conf
-
-COPY tools/wp_script.sh /usr/local/bin/wp_script.sh
-
-RUN chmod +x /usr/local/bin/wp_script.sh
-
-RUN mkdir -p /run/php && \
-    chown -R www-data:www-data /run/php
-
-RUN chown -R www-data:www-data /var/www/wordpress && \
+RUN wget https://fr.wordpress.org/wordpress-6.8.2-fr_FR.tar.gz -P /var/www && \
+    cd /var/www && \
+    tar -xzf wordpress-6.8.2-fr_FR.tar.gz && \
+    rm wordpress-6.8.2-fr_FR.tar.gz && \
+    chown -R www-data:www-data /var/www/wordpress && \
     chmod -R 755 /var/www/wordpress
+
+COPY conf/www.conf /etc/php85/php-fpm.d/www.conf
+COPY --chmod=755 tools/wp_script.sh /usr/local/bin/wp_script.sh
 
 EXPOSE 9000
 
