@@ -16,14 +16,6 @@
     mode: '0755'
   become: true
 
-# - name: Copy Makefile
-#   ansible.builtin.copy:
-#     src: ../../../../srcs/Makefile
-#     dest: /home/{{ deploy_user }}/var/www/cloud-1/Makefile
-#     owner: "{{ deploy_user }}"
-#     group: "{{ deploy_user }}"
-#     mode: '0755'
-
 - name: Render Docker Compose configuration
   ansible.builtin.template:
     src: docker-compose.yml.j2
