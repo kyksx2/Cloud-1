@@ -63,15 +63,4 @@ networks:
 
 volumes:
   db-volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/{{ deploy_user }}/data/mariadb
-
   wp-volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/{{ deploy_user }}/data/wordpress
