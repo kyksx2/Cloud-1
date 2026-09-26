@@ -1,28 +1,27 @@
 #? faire un clean qui arrete tout et supprimer le dossier cloud-1
 ---
 
-- name: clean user_deploy space
+- name: Clean deploy user and Cloud-1 stack
   hosts: webservers
   remote_user: root
   become: true
 
   tasks:
-# ! a voir apres test mais peut etre faut il verifier que le user et cloud-1 existe avant de faire tout ca
-  - name: down the docker compose and clear
-    community.docker.docker_compose_v2:
-      project_src: /home/{{ deploy_user }}/var/www/cloud-1
-      state: absent
-      remove_images: all
-      remove_volumes: true
-# https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_compose_v2_module.html
+    - name: Check if Cloud-1 project directory exists
+      ansible.builtin.stat:
+        path: "/home/{{ deploy_user }}/var/www/cloud-1"
+      register: project_dir
 
-  - name: remove cloud-1 folder
-    ansible.builtin.file:
-      path: /home/{{deploy_user}}/var/www/cloud-1
-      state: absent
+    - name: Tear down Docker Compose stack and purge resources
+      community.docker.docker_compose_v2:
+        project_src: "/home/{{ deploy_user }}/var/www/cloud-1"
+        state: absent
+        remove_images: all
+        remove_volumes: true
+      when: project_dir.stat.exists and project_dir.stat.isdir
 
-  - name: remove user_deploy account
-    ansible.builtin.user:
-      name: "{{ deploy_user }}"
-      state: absent
-      remove: true
+    - name: Remove deploy_user account and home directory
+      ansible.builtin.user:
+        name: "{{ deploy_user }}"
+        state: absent
+        remove: true
