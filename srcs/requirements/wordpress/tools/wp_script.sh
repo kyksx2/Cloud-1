@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # sleep 10
@@ -7,7 +7,12 @@ echo "=== Debut de l'initialisation de WordPress ==="
 
 cd /var/www/wordpress
 
-if [ ! -f /var/www/wordpress/wp-config.php ]; then    
+until mariadb -h mariadb -u"${SQL_USER}" -p"${SQL_PASSWORD}" -e "SELECT 1" "${SQL_DATABASE}" >/dev/null 2>&1; do
+    echo "En attente de MariaDB..."
+    sleep 2
+done
+
+if [ ! -f /var/www/wordpress/wp-config.php ]; then
     wp config create \
         --dbname="${SQL_DATABASE}" \
         --dbuser="${SQL_USER}" \
@@ -15,7 +20,11 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
         --dbhost="mariadb" \
         --skip-check \
         --allow-root
-    
+fi
+
+# on teste l'installation en base (et pas juste wp-config.php) pour
+# reprendre proprement si un demarrage precedent a echoue
+if ! wp core is-installed --allow-root 2>/dev/null; then
     wp core install \
         --url="https://${DOMAIN_NAME}" \
         --title="${WP_TITLE}" \
@@ -24,7 +33,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
         --admin_email="${WP_ADMIN_EMAIL}" \
         --skip-email \
         --allow-root
-    
+
     echo "Configuration de WordPress terminee !"
 
     wp user create \
@@ -42,4 +51,4 @@ chmod -R 755 /var/www/wordpress
 chmod -R 775 /var/www/wordpress/wp-content
 
 echo "Demarrage de PHP-FPM..."
-exec php-fpm8.2 -F --fpm-config /etc/php/8.2/fpm/php-fpm.conf
+exec php-fpm85 -F

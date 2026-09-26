@@ -53,8 +53,9 @@ services:
       - wp-volume:/var/www/wordpress
     networks:
       - inception
-    depends_on: 
+    depends_on:
       - wordpress
+      - phpmyadmin
     restart: always
 
 networks:

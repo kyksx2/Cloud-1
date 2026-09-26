@@ -16,14 +16,6 @@
       remove_images: all
       remove_volumes: true
 
-  - name: remove volumes folders
-    ansible.builtin.file:
-      path: /home/{{deploy_user}}/data/{{ item }}
-      state: absent
-    loop:
-      - wordpress
-      - mariadb
-
   - name: remove cloud-1 folder
     ansible.builtin.file:
       path: /home/{{deploy_user}}/var/www/cloud-1
