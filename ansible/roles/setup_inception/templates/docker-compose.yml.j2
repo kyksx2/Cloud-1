@@ -1,7 +1,6 @@
 services:
   mariadb:
     build: ./requirements/mariadb
-    image: srcs-mariadb
     container_name: mariadb
     env_file:
       - .env
