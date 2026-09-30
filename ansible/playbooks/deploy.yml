@@ -1,4 +1,3 @@
-# installer les logiciels, creer les dossiers et lancer le make
 # deux ecoles: playbooks a la racine ou dans un dossier 'playbooks' si + de 5 files
 #? playbook -> fichier d'automatisation avec suite logique d'etapes ordonnees
 # playbook keywords:
@@ -6,15 +5,16 @@
 # index of all modules:
 # https://docs.ansible.com/projects/ansible/latest/collections/index_module.html#ansible-builtin
 ---
-# ============================
-#  PLAY 1 : USER CREATION
-# ============================
+# =====================================
+#  PLAY 1 : USER CREATION / UFW CONFIG
+# =====================================
 - name: creation User
   hosts: webservers # groupe present dans inventory.ini
   remote_user: root
   become: true # elevation sudo
   roles:
   - ../roles/base
+  - ../roles/firewall
 
 # ===============================
 # PLAY 2 : PROJET DEPLOYEMENT
@@ -26,4 +26,3 @@
   - ../roles/install_docker
   - ../roles/setup_inception
   - ../roles/run_services
-  #! penser a mettre 'become true' pour les actions qui meritent 'sudo'

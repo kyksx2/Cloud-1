@@ -1,12 +1,30 @@
+# port 80 (http) : rien n'est servi en clair, tout est redirige vers https
+server {
+    listen 80 default_server;
+    server_name _;
+    return 301 https://{{ domain_name }}$request_uri;
+}
+
+# port 443 : si on arrive par l'ip ou par un autre nom -> redirection vers le domaine
+server {
+    listen 443 ssl default_server;
+    server_name _;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+    return 301 https://{{ domain_name }}$request_uri;
+}
+
+# site principal : wordpress sur '/' et phpmyadmin sur '/phpmyadmin/'
 server {
     listen 443 ssl;
-    ssl_protocols TLSv1.2 TLSv1.3; 
+    ssl_protocols TLSv1.2 TLSv1.3;
     ssl_certificate /etc/nginx/ssl/nginx.crt;
     ssl_certificate_key /etc/nginx/ssl/nginx.key;
     #toute la partie securite, ssl/tls
 
     root /var/www/wordpress;
-    server_name portedesaintcloud.duckdns.org;
+    server_name {{ domain_name }};
     index index.php index.html;
 
     location / { 
@@ -17,6 +35,10 @@ server {
     # '$URI' essaye de voir si le fichier existe
     # '$URI/' va regarder s'il existe dans un dossier
     # "/index..." envoie la requete a index.php gerer par php-fpm si ni '$URI' ni '$URI/' n'ont trouver
+
+    location = /phpmyadmin {
+        return 301 /phpmyadmin/;
+    }
 
     location ^~ /phpmyadmin/ { # ^~ lui dit de s'arreter et d'appliquer ce block des qu'on entre dans ce cas la
         proxy_pass http://phpmyadmin:80/;

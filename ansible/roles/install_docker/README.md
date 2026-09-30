@@ -1,12 +1,6 @@
-Role Name
-=========
-Install docker.io and docker-compose v2, before strating the service
+# install_docker
 
-Requirements
-------------
-Sudo pass
+Installs Docker Engine and the Compose v2 plugin from the official Docker repository, then starts and enables the service (restart on reboot).
 
-
-Author Information
-------------------
-Can be use anywhere to install docker, docker compose ans start it
+**Requirements:**
+sudo, Debian/Ubuntu (amd64)

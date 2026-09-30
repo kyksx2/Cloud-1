@@ -1,11 +1,6 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for setup_inception
-- name: install make
-  ansible.builtin.apt:
-    name: make
-    state: latest
-  become: true
 
 - name: Copy requirements folder
   ansible.builtin.copy:
@@ -16,6 +11,33 @@
     mode: '0755'
   become: true
 
+- name: Create nginx folder
+  ansible.builtin.file:
+    path: /home/{{ deploy_user }}/var/www/cloud-1/requirements/nginx/conf
+    state: directory
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0755'
+  become: true
+
+- name: Render nginx Dockerfile
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: /home/{{ deploy_user }}/var/www/cloud-1/requirements/nginx/Dockerfile
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0644'
+  become: true
+
+- name: Render nginx config
+  ansible.builtin.template:
+    src: default.conf.j2
+    dest: /home/{{ deploy_user }}/var/www/cloud-1/requirements/nginx/conf/default.conf
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+    mode: '0644'
+  become: true
+
 - name: Render Docker Compose configuration
   ansible.builtin.template:
     src: docker-compose.yml.j2
@@ -23,6 +45,7 @@
     owner: "{{ deploy_user }}"
     group: "{{ deploy_user }}"
     mode: '0644'
+  become: true
 
 - name: copy .env chiffre
   ansible.builtin.copy:

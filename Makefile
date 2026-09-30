@@ -8,3 +8,5 @@ up:
 
 clean:
 	ansible-playbook ./ansible/playbooks/clean.yml
+
+PHONY: all up clean

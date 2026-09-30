@@ -10,7 +10,7 @@ services:
       - inception
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${SQL_USER}", "--password=${SQL_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--protocol=tcp", "--silent"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +24,7 @@ services:
     environment:
       PMA_HOST: mariadb
       PMA_PORT: 3306
-      PMA_ABSOLUTE_URI: https://portedesaintcloud.duckdns.org/phpmyadmin/
+      PMA_ABSOLUTE_URI: "https://{{ domain_name }}/phpmyadmin/"
     restart: always
     depends_on:
       mariadb:
@@ -48,6 +48,7 @@ services:
     build: ./requirements/nginx
     container_name: nginx_inception
     ports:
+      - "80:80"
       - "443:443"
     volumes:
       - wp-volume:/var/www/wordpress

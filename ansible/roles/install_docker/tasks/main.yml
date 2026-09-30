@@ -7,7 +7,7 @@
       - curl
       - ca-certificates
       - gnupg
-    state: latest
+    state: present
     update_cache: true
   become: true
 
@@ -45,7 +45,7 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
-    state: latest
+    state: present
     update_cache: true
   become: true
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module
@@ -54,7 +54,6 @@
   ansible.builtin.systemd_service:
     name: docker
     state: started
+    enabled: true
   become: true
 # https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/systemd_service_module.html#ansible-collections-ansible-builtin-systemd-service-module
-
-
